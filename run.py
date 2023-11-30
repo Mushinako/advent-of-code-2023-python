@@ -127,7 +127,7 @@ def _get_solution_obj(day: int) -> SolutionAbstract:
     return SolutionClass()
 
 
-def _get_solution(solution_obj: SolutionAbstract, part: int) -> str | int:
+def _get_solution(solution_obj: SolutionAbstract, part: int) -> None|str | int:
     """"""
     match part:
         case 1:

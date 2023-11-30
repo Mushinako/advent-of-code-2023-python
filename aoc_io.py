@@ -10,17 +10,17 @@ from pathlib import Path
 from string import Template
 from time import sleep
 from typing import TYPE_CHECKING
-from zoneinfo import ZoneInfo
 
 import requests
 import yaml
 from bs4 import BeautifulSoup
 from colorama import Fore, init
+from zoneinfo import ZoneInfo
 
 from utils import get_input_path
 
 if TYPE_CHECKING:
-    from typing import Literal, Optional
+    from typing import Literal
 
 init(autoreset=True)
 
@@ -28,8 +28,10 @@ _CONFIG_PATH = Path(__file__).resolve().parent / "config.yml"
 with _CONFIG_PATH.open("r") as f:
     _CONFIG = yaml.safe_load(f)
 
-DATA_URL = Template("https://adventofcode.com/2022/day/${day}/input")
-ANSWER_URL = Template("https://adventofcode.com/2022/day/${day}/answer")
+_YEAR = 2023
+
+DATA_URL = Template(f"https://adventofcode.com/{_YEAR}/day/${{day}}/input")
+ANSWER_URL = Template(f"https://adventofcode.com/{_YEAR}/day/${{day}}/answer")
 
 _COOKIES = _CONFIG["cookies"]
 
@@ -37,7 +39,7 @@ _DAY_CHOICES = set(range(1, 26))
 _LEVEL_CHOICES = {1, 2}
 
 
-def download_input(day: int, input_path: Optional[Path] = None) -> None:
+def download_input(day: int, input_path: None | Path = None) -> None:
     """
     Download input from AOC website.
     Args:
@@ -47,7 +49,7 @@ def download_input(day: int, input_path: Optional[Path] = None) -> None:
     if day not in _DAY_CHOICES:
         raise ValueError(f"{day=} is not in range 1..25")
     # One extra second just to be sure
-    target_time_est = datetime(2022, 12, day, 0, 0, 1, tzinfo=ZoneInfo("EST"))
+    target_time_est = datetime(_YEAR, 12, day, 0, 0, 1, tzinfo=ZoneInfo("EST"))
     target_time_local = datetime.fromtimestamp(target_time_est.timestamp())
 
     while (now := datetime.now()) < target_time_local:
@@ -110,7 +112,7 @@ def submit_output(day: int, part: Literal[1, 2], answer: str | int) -> None:
 
     html = BeautifulSoup(data, "html.parser")
     try:
-        response_text: str = html.article.p.text
+        response_text: str = html.article.p.text  # pyright: ignore[reportOptionalMemberAccess]
     except AttributeError as err:
         raise ValueError(f"Unknown response html: {data}") from err
     if response_text.startswith("You don't"):
