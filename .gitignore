@@ -1,0 +1,21 @@
+# Python
+venv/
+**/__pycache__/
+
+# Secrets
+config.yml
+
+# Formatting
+.flake8
+
+# Inputs
+**/input.txt
+
+# Poetry
+poetry.lock
+
+# VS Code
+.vscode/
+
+# Temp files
+tmp.*
