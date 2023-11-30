@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "advent-of-code-template"
+name = "advent-of-code-2023"
 version = "0.1.0"
-description = "Template of my solutions to Advent of Code https://adventofcode.com/"
+description = "My Python solutions to Advent of Code 2023 https://adventofcode.com/2023"
 authors = ["Mushinako <8977737+Mushinako@users.noreply.github.com>"]
 readme = "README.md"
 
