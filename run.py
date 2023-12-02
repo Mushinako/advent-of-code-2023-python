@@ -106,7 +106,7 @@ def _prepare(day: int) -> None:
         with subpath.open("w") as f:
             f.write(data)
     print("Base URL: https://adventofcode.com/2023")
-    print(f"Day URL: https://adventofcode.com/2023/{day}")
+    print(f"Day URL: https://adventofcode.com/2023/day/{day}")
     download_input(day=day)
 
 
