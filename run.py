@@ -61,7 +61,7 @@ def _main() -> None:
 
 def _get_args() -> Namespace:
     """"""
-    parser = ArgumentParser(description="AoC 2022")
+    parser = ArgumentParser(description="AoC 2023")
     subparsers = parser.add_subparsers(dest="command")
 
     # Preparations
@@ -105,8 +105,8 @@ def _prepare(day: int) -> None:
         data = data.replace("xx", f"{day:>02}").replace("-1", str(day))
         with subpath.open("w") as f:
             f.write(data)
-    print("Base URL: https://adventofcode.com/2022")
-    print(f"Day URL: https://adventofcode.com/2022/{day}")
+    print("Base URL: https://adventofcode.com/2023")
+    print(f"Day URL: https://adventofcode.com/2023/{day}")
     download_input(day=day)
 
 
@@ -127,7 +127,7 @@ def _get_solution_obj(day: int) -> SolutionAbstract:
     return SolutionClass()
 
 
-def _get_solution(solution_obj: SolutionAbstract, part: int) -> None|str | int:
+def _get_solution(solution_obj: SolutionAbstract, part: int) -> None | str | int:
     """"""
     match part:
         case 1:
