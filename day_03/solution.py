@@ -54,9 +54,9 @@ class _Schematic:
             if not self[row, c_end].isdigit():
                 break
             c_end += 1
-        return [(row, c) for c in range(c_start, c_end)], int(
-            "".join(self.data[row][c_start:c_end])
-        )
+        num = int("".join(self.data[row][c_start:c_end]))
+        occupied_coords = [(row, c) for c in range(c_start, c_end)]
+        return occupied_coords, num
 
     def get_adjacent_numbers(self, coord: _Coord) -> list[int]:
         """
@@ -70,8 +70,8 @@ class _Schematic:
             if num_result is None:
                 coords_to_check.discard(check_coord)
                 continue
-            covered_coords, num = num_result
-            coords_to_check.difference_update(covered_coords)
+            occupied_coords, num = num_result
+            coords_to_check.difference_update(occupied_coords)
             adjacent_numbers.append(num)
         return adjacent_numbers
 
