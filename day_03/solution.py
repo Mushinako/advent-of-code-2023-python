@@ -33,6 +33,10 @@ class _Schematic:
     def is_symbol(cell: str) -> bool:
         return not cell.isdigit() and cell != "."
 
+    @staticmethod
+    def is_gear(cell: str) -> bool:
+        return cell == "*"
+
     def iter_cells(self) -> Iterable[tuple[_Coord, str]]:
         for r, row in enumerate(self.data):
             for c, cell in enumerate(row):
@@ -109,7 +113,7 @@ class Solution(SolutionAbstract):
         """
         sum_ = 0
         for coord, cell in self.data.iter_cells():
-            if not self.data.is_symbol(cell):
+            if not self.data.is_gear(cell):
                 continue
             adjacent_numbers = self.data.get_adjacent_numbers(coord)
             if len(adjacent_numbers) != 2:
