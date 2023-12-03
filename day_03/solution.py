@@ -11,7 +11,6 @@ from utils import SolutionAbstract
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    type _Data = "_Schematic"
     type _Coord = tuple[int, int]
 
 
@@ -79,9 +78,9 @@ class _Schematic:
 
 class Solution(SolutionAbstract):
     day = 3
-    data: _Data
+    data: _Schematic
 
-    def _process_data(self, raw_data: list[str]) -> _Data:
+    def _process_data(self, raw_data: list[str]) -> _Schematic:
         """
         Process day 03 data.
         """
