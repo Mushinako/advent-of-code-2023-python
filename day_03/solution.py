@@ -29,14 +29,6 @@ class _Schematic:
         row, col = index
         return self.data[row][col]
 
-    @staticmethod
-    def is_symbol(cell: str) -> bool:
-        return not cell.isdigit() and cell != "."
-
-    @staticmethod
-    def is_gear(cell: str) -> bool:
-        return cell == "*"
-
     def iter_cells(self) -> Iterable[tuple[_Coord, str]]:
         for r, row in enumerate(self.data):
             for c, cell in enumerate(row):
@@ -101,7 +93,7 @@ class Solution(SolutionAbstract):
         """
         sum_ = 0
         for coord, cell in self.data.iter_cells():
-            if not self.data.is_symbol(cell):
+            if cell.isdigit() or cell == ".":
                 continue
             adjacent_numbers = self.data.get_adjacent_numbers(coord)
             sum_ += sum(adjacent_numbers)
@@ -113,7 +105,7 @@ class Solution(SolutionAbstract):
         """
         sum_ = 0
         for coord, cell in self.data.iter_cells():
-            if not self.data.is_gear(cell):
+            if cell != "*":
                 continue
             adjacent_numbers = self.data.get_adjacent_numbers(coord)
             if len(adjacent_numbers) != 2:
