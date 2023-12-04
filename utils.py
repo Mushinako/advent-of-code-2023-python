@@ -1,5 +1,4 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
@@ -11,15 +10,19 @@ if TYPE_CHECKING:
     from typing import Any, ClassVar
 
 
-class SolutionAbstract(ABC):
-    day: ClassVar[int] = 0
+class SolutionAbstract[_Data](ABC):
+    day: ClassVar[int]
+    data: _Data
 
     def __init__(self) -> None:
         raw_data = self._get_raw_data()
         self.data = self._process_data(raw_data)
 
+    def __init_subclass__(cls, *, day: int, **kwargs: Any) -> None:
+        cls.day = day
+        super().__init_subclass__(**kwargs)
+
     def _get_input_path(self) -> Path:
-        """"""
         return get_input_path(self.day)
 
     def _get_raw_data(self) -> list[str]:
@@ -32,7 +35,7 @@ class SolutionAbstract(ABC):
         return lines
 
     @abstractmethod
-    def _process_data(self, raw_data: list[str]) -> Any:
+    def _process_data(self, raw_data: list[str]) -> _Data:
         """
         Process input data.
         """

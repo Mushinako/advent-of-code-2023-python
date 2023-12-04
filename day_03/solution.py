@@ -1,5 +1,4 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
@@ -76,10 +75,7 @@ class _Schematic:
         return adjacent_numbers
 
 
-class Solution(SolutionAbstract):
-    day = 3
-    data: _Schematic
-
+class Solution(SolutionAbstract[_Schematic], day=3):
     def _process_data(self, raw_data: list[str]) -> _Schematic:
         """
         Process day 03 data.

@@ -1,21 +1,12 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from utils import SolutionAbstract
 
-if TYPE_CHECKING:
-    _Data = type(None)
 
-
-class Solution(SolutionAbstract):
-    day = -1
-    data: _Data
-
-    def _process_data(self, raw_data: list[str]) -> _Data:
+class Solution(SolutionAbstract[object], day=-1):
+    def _process_data(self, raw_data: list[str]) -> ...:
         """
         Process day xx data.
         """

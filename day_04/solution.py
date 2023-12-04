@@ -1,5 +1,4 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
@@ -38,10 +37,7 @@ class _Card:
         )
 
 
-class Solution(SolutionAbstract):
-    day = 4
-    data: list[_Card]
-
+class Solution(SolutionAbstract[list[_Card]], day=4):
     def _process_data(self, raw_data: list[str]) -> list[_Card]:
         """
         Process day 04 data.

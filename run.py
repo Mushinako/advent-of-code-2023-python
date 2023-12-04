@@ -1,5 +1,4 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
@@ -15,6 +14,7 @@ from aoc_io import download_input, submit_output
 
 if TYPE_CHECKING:
     from argparse import Namespace
+    from typing import Any
 
     from .utils import SolutionAbstract
 
@@ -28,7 +28,6 @@ _METHOD_CMDS = ["m", "me", "method"]
 
 
 def _main() -> None:
-    """"""
     args = _get_args()
 
     # Prepare
@@ -60,7 +59,6 @@ def _main() -> None:
 
 
 def _get_args() -> Namespace:
-    """"""
     parser = ArgumentParser(description="AoC 2023")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -91,7 +89,6 @@ def _get_args() -> Namespace:
 
 
 def _prepare(day: int) -> None:
-    """"""
     parent_dir = Path(__file__).resolve().parent
     target_dir = parent_dir / f"day_{day:>02}"
     if not target_dir.exists():
@@ -110,8 +107,9 @@ def _prepare(day: int) -> None:
     download_input(day=day)
 
 
-def _run_method(solution_obj: SolutionAbstract, day: int, method_name: str) -> None:
-    """"""
+def _run_method(
+    solution_obj: SolutionAbstract[Any], day: int, method_name: str
+) -> None:
     method = getattr(solution_obj, method_name)
     if not callable(method):
         raise ValueError(f"No method with name {method_name} on day {day}'s solution")
@@ -119,16 +117,14 @@ def _run_method(solution_obj: SolutionAbstract, day: int, method_name: str) -> N
     print(f"{Fore.GREEN}{result}")
 
 
-def _get_solution_obj(day: int) -> SolutionAbstract:
-    """"""
+def _get_solution_obj(day: int) -> SolutionAbstract[Any]:
     dir_name = f"day_{day:>02}"
     solution_module = import_module(f"{dir_name}.solution")
-    SolutionClass: type[SolutionAbstract] = getattr(solution_module, "Solution")
+    SolutionClass: type[SolutionAbstract[Any]] = getattr(solution_module, "Solution")
     return SolutionClass()
 
 
-def _get_solution(solution_obj: SolutionAbstract, part: int) -> None | str | int:
-    """"""
+def _get_solution(solution_obj: SolutionAbstract[Any], part: int) -> None | str | int:
     match part:
         case 1:
             return solution_obj.part_1()

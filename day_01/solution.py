@@ -1,20 +1,11 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from utils import SolutionAbstract
 
-if TYPE_CHECKING:
-    _Data = list[str]
 
-
-class Solution(SolutionAbstract):
-    day = 1
-    data: _Data
-
+class Solution(SolutionAbstract[list[str]], day=1):
     _WORD_MAP = {
         "one": "1",
         "two": "2",
@@ -27,7 +18,7 @@ class Solution(SolutionAbstract):
         "nine": "9",
     }
 
-    def _process_data(self, raw_data: list[str]) -> _Data:
+    def _process_data(self, raw_data: list[str]) -> list[str]:
         """
         Process day 01 data.
         """

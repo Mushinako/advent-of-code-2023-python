@@ -1,5 +1,4 @@
 # pyright: reportMissingTypeStubs=false
-""""""
 
 from __future__ import annotations
 
@@ -11,8 +10,6 @@ from utils import SolutionAbstract
 if TYPE_CHECKING:
     from typing import Self
 
-    _Data = list["_Game"]
-
 
 @dataclass(frozen=True, kw_only=True)
 class _Game:
@@ -21,11 +18,12 @@ class _Game:
 
     @classmethod
     def from_str(cls, s: str) -> Self:
-        id_str, reveals_str = [
-            ss.strip() for ss in s.lower().removeprefix("game").split(":")
+        id_str, reveals_str = s.lower().removeprefix("game").split(":")
+        id_ = int(id_str.strip())
+        reveals = [
+            _CubeReveal.from_str(s.strip()) for s in reveals_str.strip().split(";")
         ]
-        reveals = [_CubeReveal.from_str(s.strip()) for s in reveals_str.split(";")]
-        return cls(id=int(id_str), reveals=reveals)
+        return cls(id=id_, reveals=reveals)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -44,11 +42,8 @@ class _CubeReveal:
         return cls(**counts)
 
 
-class Solution(SolutionAbstract):
-    day = 2
-    data: _Data
-
-    def _process_data(self, raw_data: list[str]) -> _Data:
+class Solution(SolutionAbstract[list[_Game]], day=2):
+    def _process_data(self, raw_data: list[str]) -> list[_Game]:
         """
         Process day 02 data.
         """
