@@ -14,7 +14,7 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 01 (Trebuchet?!)    |     886      |     409      |      |
 | 02 (Cube Conundrum) |     2332     |     1578     |      |
 | 03 (Gear Ratios)    |     1074     |     458      |      |
-| 04 ()               |              |              |      |
+| 04 (Scratchcards)   |     2659     |     1298     |      |
 | 05 ()               |              |              |      |
 | 06 ()               |              |              |      |
 | 07 ()               |              |              |      |
@@ -37,13 +37,13 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 24 ()               |              |              |      |
 | 25 ()               |              |              |      |
 
-### By Leaderboard (as of 2023-12-03 00:59 EDT)
+### By Leaderboard (as of 2023-12-04 00:34 EDT)
 
 | Leaderboard | Score | Rank |
 | :---------- | :---: | :--: |
 | Worldwide   |   0   |      |
-| PyDis       | 6441  |  16  |
-| PyDis Staff |  485  |  3   |
+| PyDis       | 7515  |  21  |
+| PyDis Staff |  648  |  4   |
 
 ## How to Use this Repo?
 
