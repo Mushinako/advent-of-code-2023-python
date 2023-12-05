@@ -16,6 +16,10 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, kw_only=True)
 class _AlmanacMapRange:
+    """
+    A range in the alamanic mapping, corresponds to a row
+    """
+
     src_start: int
     dest_start: int
     length: int
@@ -27,6 +31,20 @@ class _AlmanacMapRange:
 
 
 class _AlmanacMap:
+    """
+    Attributes:
+        forward_ranges (list[_AlmanacMapRange]):
+            All ranges, sorted by `src_start`. This is for easier bisecting when getting
+            `dest` value from `src` value
+        backward_ranges (list[_AlmanacMapRange]):
+            All ranges, sorted by `dest_start`. This is for easier bisecting when
+            getting `src` value from `dest` value
+        src_starts (list[int]):
+            All of the `src_start` from all ranges, sorted
+        dest_starts (list[int]):
+            All of the `dest_start` from all ranges, sorted
+    """
+
     forward_ranges: list[_AlmanacMapRange]
     backward_ranges: list[_AlmanacMapRange]
     src_starts: list[int]
@@ -43,7 +61,10 @@ class _AlmanacMap:
         return cls(ranges=[_AlmanacMapRange.from_row(row) for row in rows])
 
     def forward_get(self, key: int) -> int:
-        return self.get(
+        """
+        Get `dest` value from `src` value
+        """
+        return self._get(
             key=key,
             ranges=self.forward_ranges,
             src_field="src_start",
@@ -51,7 +72,10 @@ class _AlmanacMap:
         )
 
     def backward_get(self, key: int) -> int:
-        return self.get(
+        """
+        Get `src` value from `dest` value
+        """
+        return self._get(
             key=key,
             ranges=self.backward_ranges,
             src_field="dest_start",
@@ -59,9 +83,12 @@ class _AlmanacMap:
         )
 
     @staticmethod
-    def get(
+    def _get(
         *, key: int, ranges: list[_AlmanacMapRange], src_field: str, dest_field: str
     ) -> int:
+        """
+        Shared logics for `forward_get` and `backward_get`
+        """
         index = bisect_right(ranges, key, key=attrgetter(src_field)) - 1
         range_ = ranges[index]
         offset = key - getattr(range_, src_field)
@@ -72,6 +99,14 @@ class _AlmanacMap:
 
 @dataclass(frozen=True, kw_only=True)
 class _Almanac:
+    """
+    Attributes:
+        seed_starts (list[int]):
+            All seed values that correspond to a `src_start` in **any** of the mappings,
+            sorted for easier bisecting. Values from non-seed categories are translated
+            back to seed numbers via `backward_get`
+    """
+
     seed_soil_map: _AlmanacMap
     soil_fert_map: _AlmanacMap
     fert_water_map: _AlmanacMap
@@ -79,12 +114,17 @@ class _Almanac:
     light_temp_map: _AlmanacMap
     temp_hum_map: _AlmanacMap
     hum_loc_map: _AlmanacMap
+
     seed_starts: list[int] = field(init=False)
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "seed_starts", self._get_seed_starts())
 
     def _get_seed_starts(self) -> list[int]:
+        """
+        Get all seed values that correspond to a `src_start` in any of the mappings,
+          sorted
+        """
         hum_starts = self.hum_loc_map.src_starts
         temp_starts = chain(
             map(self.temp_hum_map.backward_get, hum_starts),
@@ -116,6 +156,9 @@ class _Almanac:
         return self.get_seed_loc(seed)
 
     def get_seed_loc(self, seed: int) -> int:
+        """
+        Get location number corresponding to the seed number
+        """
         soil = self.seed_soil_map.forward_get(seed)
         fert = self.soil_fert_map.forward_get(soil)
         water = self.fert_water_map.forward_get(fert)
@@ -124,11 +167,16 @@ class _Almanac:
         hum = self.temp_hum_map.forward_get(temp)
         return self.hum_loc_map.forward_get(hum)
 
-    def get_range_seed_starts(self, *, start: int, length: int) -> list[int]:
-        min_index = bisect_left(self.seed_starts, start)
-        max_index = bisect_right(self.seed_starts, start + length - 1)
+    def get_range_seed_candidates(
+        self, *, seed_start: int, seed_length: int
+    ) -> list[int]:
+        """
+        Get a list of possible seed numbers that may produce the lowest location number
+        """
+        min_index = bisect_left(self.seed_starts, seed_start)
+        max_index = bisect_right(self.seed_starts, seed_start + seed_length - 1)
         range_seed_starts = set(self.seed_starts[min_index : max_index + 1])
-        range_seed_starts.add(start)
+        range_seed_starts.add(seed_start)
         return sorted(range_seed_starts)
 
 
@@ -187,7 +235,7 @@ class Solution(SolutionAbstract, day=5):
         return min(
             self.almanac[seed]
             for seed_start, seed_length in batched(self.seed_configs, 2)
-            for seed in self.almanac.get_range_seed_starts(
-                start=seed_start, length=seed_length
+            for seed in self.almanac.get_range_seed_candidates(
+                seed_start=seed_start, seed_length=seed_length
             )
         )
