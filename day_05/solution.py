@@ -150,6 +150,8 @@ class _Almanac:
             map(self.seed_soil_map.backward_get, soil_starts),
             self.seed_soil_map.src_starts,
         )
+        # No need to consider a lower bound. That will be taken care of by the
+        #   candidate ranges
         return sorted(set(seed_starts))
 
     def __getitem__(self, seed: int) -> int:
