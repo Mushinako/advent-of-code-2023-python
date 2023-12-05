@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from bisect import bisect_right
-from dataclasses import dataclass
-from itertools import batched
+from bisect import bisect_left, bisect_right
+from dataclasses import dataclass, field
+from itertools import batched, chain
 from operator import attrgetter
 from typing import TYPE_CHECKING
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from typing import Self
 
 
-@dataclass(frozen=True, kw_only=True, order=True)
+@dataclass(frozen=True, kw_only=True)
 class _AlmanacMapRange:
     src_start: int
     dest_start: int
@@ -26,23 +26,47 @@ class _AlmanacMapRange:
         return cls(src_start=src_start, dest_start=dest_start, length=length)
 
 
-@dataclass(frozen=True, kw_only=True)
 class _AlmanacMap:
-    ranges: list[_AlmanacMapRange]
+    forward_ranges: list[_AlmanacMapRange]
+    backward_ranges: list[_AlmanacMapRange]
+    src_starts: list[int]
+    dest_starts: list[int]
 
-    def __post_init__(self) -> None:
-        self.ranges.sort()
+    def __init__(self, ranges: list[_AlmanacMapRange]) -> None:
+        self.forward_ranges = sorted(ranges, key=attrgetter("src_start"))
+        self.backward_ranges = sorted(ranges, key=attrgetter("dest_start"))
+        self.src_starts = [range_.src_start for range_ in self.forward_ranges]
+        self.dest_starts = [range_.dest_start for range_ in self.backward_ranges]
 
     @classmethod
     def from_rows(cls, rows: list[str]) -> Self:
         return cls(ranges=[_AlmanacMapRange.from_row(row) for row in rows])
 
-    def __getitem__(self, key: int) -> int:
-        index = bisect_right(self.ranges, key, key=attrgetter("src_start"))
-        range_ = self.ranges[index - 1]
-        offset = key - range_.src_start
+    def forward_get(self, key: int) -> int:
+        return self.get(
+            key=key,
+            ranges=self.forward_ranges,
+            src_field="src_start",
+            dest_field="dest_start",
+        )
+
+    def backward_get(self, key: int) -> int:
+        return self.get(
+            key=key,
+            ranges=self.backward_ranges,
+            src_field="dest_start",
+            dest_field="src_start",
+        )
+
+    @staticmethod
+    def get(
+        *, key: int, ranges: list[_AlmanacMapRange], src_field: str, dest_field: str
+    ) -> int:
+        index = bisect_right(ranges, key, key=attrgetter(src_field)) - 1
+        range_ = ranges[index]
+        offset = key - getattr(range_, src_field)
         if 0 <= offset < range_.length:
-            return range_.dest_start + offset
+            return getattr(range_, dest_field) + offset
         return key
 
 
@@ -55,15 +79,57 @@ class _Almanac:
     light_temp_map: _AlmanacMap
     temp_hum_map: _AlmanacMap
     hum_loc_map: _AlmanacMap
+    seed_starts: list[int] = field(init=False)
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "seed_starts", self._get_seed_starts())
+
+    def _get_seed_starts(self) -> list[int]:
+        hum_starts = self.hum_loc_map.src_starts
+        temp_starts = chain(
+            map(self.temp_hum_map.backward_get, hum_starts),
+            self.temp_hum_map.src_starts,
+        )
+        light_starts = chain(
+            map(self.light_temp_map.backward_get, temp_starts),
+            self.light_temp_map.src_starts,
+        )
+        water_starts = chain(
+            map(self.water_light_map.backward_get, light_starts),
+            self.water_light_map.src_starts,
+        )
+        fert_starts = chain(
+            map(self.fert_water_map.backward_get, water_starts),
+            self.fert_water_map.src_starts,
+        )
+        soil_starts = chain(
+            map(self.soil_fert_map.backward_get, fert_starts),
+            self.soil_fert_map.src_starts,
+        )
+        seed_starts = chain(
+            map(self.seed_soil_map.backward_get, soil_starts),
+            self.seed_soil_map.src_starts,
+        )
+        return sorted(set(seed_starts))
+
+    def __getitem__(self, seed: int) -> int:
+        return self.get_seed_loc(seed)
 
     def get_seed_loc(self, seed: int) -> int:
-        soil = self.seed_soil_map[seed]
-        fert = self.soil_fert_map[soil]
-        water = self.fert_water_map[fert]
-        light = self.water_light_map[water]
-        temp = self.light_temp_map[light]
-        hum = self.temp_hum_map[temp]
-        return self.hum_loc_map[hum]
+        soil = self.seed_soil_map.forward_get(seed)
+        fert = self.soil_fert_map.forward_get(soil)
+        water = self.fert_water_map.forward_get(fert)
+        light = self.water_light_map.forward_get(water)
+        temp = self.light_temp_map.forward_get(light)
+        hum = self.temp_hum_map.forward_get(temp)
+        return self.hum_loc_map.forward_get(hum)
+
+    def get_range_seed_starts(self, *, start: int, length: int) -> list[int]:
+        min_index = bisect_left(self.seed_starts, start)
+        max_index = bisect_right(self.seed_starts, start + length - 1)
+        range_seed_starts = set(self.seed_starts[min_index : max_index + 1])
+        range_seed_starts.add(start)
+        return sorted(range_seed_starts)
 
 
 class Solution(SolutionAbstract, day=5):
@@ -112,22 +178,16 @@ class Solution(SolutionAbstract, day=5):
         """
         Day 05 part 1 solution.
         """
-        return min(self.almanac.get_seed_loc(seed) for seed in self.seed_configs)
+        return min(self.almanac[seed] for seed in self.seed_configs)
 
     def part_2(self) -> int:
         """
         Day 05 part 2 solution.
         """
-        min_loc = None
-        for seed_start, seed_length in batched(self.seed_configs, 2):
-            print(f"Processing {seed_start} {seed_length}")
-            for i, seed in enumerate(range(seed_start, seed_start + seed_length)):
-                if not i % 1_000_000:
-                    print(f"  Processed {i} seeds")
-                loc = self.almanac.get_seed_loc(seed)
-                if min_loc is None:
-                    min_loc = loc
-                else:
-                    min_loc = min(min_loc, loc)
-        assert min_loc is not None
-        return min_loc
+        return min(
+            self.almanac[seed]
+            for seed_start, seed_length in batched(self.seed_configs, 2)
+            for seed in self.almanac.get_range_seed_starts(
+                start=seed_start, length=seed_length
+            )
+        )
