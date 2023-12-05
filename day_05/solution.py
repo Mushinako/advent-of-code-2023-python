@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from utils import SolutionAbstract
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from typing import Self
 
 
@@ -57,7 +58,7 @@ class _AlmanacMap:
         self.dest_starts = [range_.dest_start for range_ in self.backward_ranges]
 
     @classmethod
-    def from_rows(cls, rows: list[str]) -> Self:
+    def from_rows(cls, rows: Iterable[str]) -> Self:
         return cls(ranges=[_AlmanacMapRange.from_row(row) for row in rows])
 
     def forward_get(self, key: int) -> int:
@@ -116,6 +117,40 @@ class _Almanac:
     hum_loc_map: _AlmanacMap
 
     seed_starts: list[int] = field(init=False)
+
+    @classmethod
+    def from_text_rows(cls, rows: Iterable[str]) -> Self:
+        rows_iter = iter(rows)
+
+        def get_section_rows() -> list[str]:
+            # Ignore empty rows and first non-empty row, which is the header
+            while not next(rows_iter):
+                pass
+            rows: list[str] = []
+            for row in rows_iter:
+                if row:
+                    rows.append(row)
+                else:
+                    break
+            return rows
+
+        seed_soil_rows = get_section_rows()
+        soil_fert_rows = get_section_rows()
+        fert_water_rows = get_section_rows()
+        water_light_rows = get_section_rows()
+        light_temp_rows = get_section_rows()
+        temp_hum_rows = get_section_rows()
+        hum_loc_rows = get_section_rows()
+
+        return cls(
+            seed_soil_map=_AlmanacMap.from_rows(seed_soil_rows),
+            soil_fert_map=_AlmanacMap.from_rows(soil_fert_rows),
+            fert_water_map=_AlmanacMap.from_rows(fert_water_rows),
+            water_light_map=_AlmanacMap.from_rows(water_light_rows),
+            light_temp_map=_AlmanacMap.from_rows(light_temp_rows),
+            temp_hum_map=_AlmanacMap.from_rows(temp_hum_rows),
+            hum_loc_map=_AlmanacMap.from_rows(hum_loc_rows),
+        )
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "seed_starts", self._get_seed_starts())
@@ -194,35 +229,7 @@ class Solution(SolutionAbstract, day=5):
         self.seed_configs = list(
             map(int, next(data_iter).split(":")[1].strip().split())
         )
-
-        def get_section_rows() -> list[str]:
-            next(data_iter)
-            next(data_iter)
-            rows: list[str] = []
-            for row in data_iter:
-                if row:
-                    rows.append(row)
-                else:
-                    break
-            return rows
-
-        seed_soil_rows = get_section_rows()
-        soil_fert_rows = get_section_rows()
-        fert_water_rows = get_section_rows()
-        water_light_rows = get_section_rows()
-        light_temp_rows = get_section_rows()
-        temp_hum_rows = get_section_rows()
-        hum_loc_rows = get_section_rows()
-
-        self.almanac = _Almanac(
-            seed_soil_map=_AlmanacMap.from_rows(seed_soil_rows),
-            soil_fert_map=_AlmanacMap.from_rows(soil_fert_rows),
-            fert_water_map=_AlmanacMap.from_rows(fert_water_rows),
-            water_light_map=_AlmanacMap.from_rows(water_light_rows),
-            light_temp_map=_AlmanacMap.from_rows(light_temp_rows),
-            temp_hum_map=_AlmanacMap.from_rows(temp_hum_rows),
-            hum_loc_map=_AlmanacMap.from_rows(hum_loc_rows),
-        )
+        self.almanac = _Almanac.from_text_rows(data_iter)
 
     def part_1(self) -> int:
         """
