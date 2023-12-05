@@ -42,19 +42,21 @@ class _CubeReveal:
         return cls(**counts)
 
 
-class Solution(SolutionAbstract[list[_Game]], day=2):
-    def _process_data(self, raw_data: list[str]) -> list[_Game]:
+class Solution(SolutionAbstract, day=2):
+    games: list[_Game]
+
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process day 02 data.
         """
-        return [_Game.from_str(row) for row in raw_data]
+        self.games = [_Game.from_str(row) for row in raw_data]
 
     def part_1(self) -> int:
         """
         Day 02 part 1 solution.
         """
         sum_ = 0
-        for game in self.data:
+        for game in self.games:
             for reveal in game.reveals:
                 if reveal.red > 12 or reveal.green > 13 or reveal.blue > 14:
                     break
@@ -67,7 +69,7 @@ class Solution(SolutionAbstract[list[_Game]], day=2):
         Day 02 part 2 solution.
         """
         sum_ = 0
-        for game in self.data:
+        for game in self.games:
             red = max(reveal.red for reveal in game.reveals)
             green = max(reveal.green for reveal in game.reveals)
             blue = max(reveal.blue for reveal in game.reveals)

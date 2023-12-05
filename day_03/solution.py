@@ -75,22 +75,24 @@ class _Schematic:
         return adjacent_numbers
 
 
-class Solution(SolutionAbstract[_Schematic], day=3):
-    def _process_data(self, raw_data: list[str]) -> _Schematic:
+class Solution(SolutionAbstract, day=3):
+    schematic: _Schematic
+
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process day 03 data.
         """
-        return _Schematic(data=[list(row) for row in raw_data])
+        self.schematic = _Schematic(data=[list(row) for row in raw_data])
 
     def part_1(self) -> int:
         """
         Day 03 part 1 solution.
         """
         sum_ = 0
-        for coord, cell in self.data.iter_cells():
+        for coord, cell in self.schematic.iter_cells():
             if cell.isdigit() or cell == ".":
                 continue
-            adjacent_numbers = self.data.get_adjacent_numbers(coord)
+            adjacent_numbers = self.schematic.get_adjacent_numbers(coord)
             sum_ += sum(adjacent_numbers)
         return sum_
 
@@ -99,10 +101,10 @@ class Solution(SolutionAbstract[_Schematic], day=3):
         Day 03 part 2 solution.
         """
         sum_ = 0
-        for coord, cell in self.data.iter_cells():
+        for coord, cell in self.schematic.iter_cells():
             if cell != "*":
                 continue
-            adjacent_numbers = self.data.get_adjacent_numbers(coord)
+            adjacent_numbers = self.schematic.get_adjacent_numbers(coord)
             if len(adjacent_numbers) != 2:
                 continue
             sum_ += adjacent_numbers[0] * adjacent_numbers[1]

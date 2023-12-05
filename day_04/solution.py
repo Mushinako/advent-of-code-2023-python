@@ -37,19 +37,21 @@ class _Card:
         )
 
 
-class Solution(SolutionAbstract[list[_Card]], day=4):
-    def _process_data(self, raw_data: list[str]) -> list[_Card]:
+class Solution(SolutionAbstract, day=4):
+    cards: list[_Card]
+
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process day 04 data.
         """
-        return [_Card.from_str(row) for row in raw_data]
+        self.cards = [_Card.from_str(row) for row in raw_data]
 
     def part_1(self) -> int:
         """
         Day 04 part 1 solution.
         """
         points = 0
-        for card in self.data:
+        for card in self.cards:
             if card.won_nums_count > 0:
                 points += 1 << (card.won_nums_count - 1)
         return points
@@ -58,8 +60,8 @@ class Solution(SolutionAbstract[list[_Card]], day=4):
         """
         Day 04 part 2 solution.
         """
-        count_map = [1] * len(self.data)
-        for card in self.data:
+        count_map = [1] * len(self.cards)
+        for card in self.cards:
             for i in range(card.index, card.index + card.won_nums_count):
                 count_map[i] += count_map[card.index - 1]
         return sum(count_map)

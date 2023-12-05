@@ -10,13 +10,12 @@ if TYPE_CHECKING:
     from typing import Any, ClassVar
 
 
-class SolutionAbstract[_Data](ABC):
+class SolutionAbstract(ABC):
     day: ClassVar[int]
-    data: _Data
 
     def __init__(self) -> None:
         raw_data = self._get_raw_data()
-        self.data = self._process_data(raw_data)
+        self._process_data(raw_data)
 
     def __init_subclass__(cls, *, day: int, **kwargs: Any) -> None:
         cls.day = day
@@ -35,7 +34,7 @@ class SolutionAbstract[_Data](ABC):
         return lines
 
     @abstractmethod
-    def _process_data(self, raw_data: list[str]) -> _Data:
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process input data.
         """

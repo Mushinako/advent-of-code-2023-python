@@ -5,7 +5,8 @@ from __future__ import annotations
 from utils import SolutionAbstract
 
 
-class Solution(SolutionAbstract[list[str]], day=1):
+class Solution(SolutionAbstract, day=1):
+    data: list[str]
     _WORD_MAP = {
         "one": "1",
         "two": "2",
@@ -18,11 +19,11 @@ class Solution(SolutionAbstract[list[str]], day=1):
         "nine": "9",
     }
 
-    def _process_data(self, raw_data: list[str]) -> list[str]:
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process day 01 data.
         """
-        return raw_data
+        self.data = raw_data
 
     def part_1(self) -> int:
         """
