@@ -6,7 +6,7 @@ from utils import SolutionAbstract
 
 
 class Solution(SolutionAbstract, day=-1):
-    def _process_data(self, raw_data: list[str]) -> ...:
+    def _process_data(self, raw_data: list[str]) -> None:
         """
         Process day xx data.
         """
