@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from math import prod
 
@@ -14,12 +15,13 @@ class _Race:
     distance: int
 
     def get_win_count(self) -> int:
-        for t in range((self.time + 1) // 2):
-            if t * (self.time - t) > self.distance:
-                break
-        else:
+        discriminant = self.time * self.time - 4 * self.distance
+        if discriminant <= 0:
             return 0
-        return self.time - t * 2 + 1
+        sd = math.sqrt(discriminant)
+        t_min = math.floor((self.time - sd) / 2) + 1
+        t_max = math.ceil((self.time + sd) / 2) - 1
+        return t_max - t_min + 1
 
 
 class Solution(SolutionAbstract, day=6):
