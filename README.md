@@ -16,7 +16,7 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 03 (Gear Ratios)                     |     1074     |     458      |      |
 | 04 (Scratchcards)                    |     2659     |     1298     |      |
 | 05 (If You Give A Seed A Fertilizer) |     3170     |     3117     |      |
-| 06 ()                                |              |              |      |
+| 06 (Wait For It)                     |     1113     |     1342     |      |
 | 07 ()                                |              |              |      |
 | 08 ()                                |              |              |      |
 | 09 ()                                |              |              |      |
@@ -42,8 +42,8 @@ uploaded at least 30 minutes after the start of each day's contest.
 | Leaderboard | Score | Rank |
 | :---------- | :---: | :--: |
 | Worldwide   |   0   |      |
-| PyDis       | 10753 |  22  |
-| PyDis Staff |  794  |  4   |
+| PyDis       | 12954 |  22  |
+| PyDis Staff |  950  |  4   |
 
 ## How to Use this Repo?
 
