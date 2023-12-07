@@ -34,12 +34,10 @@ class SolutionAbstract(ABC):
             lines.pop()
         return lines
 
-    @abstractmethod
     def _process_data(self, raw_data: list[str]) -> None:
         """
         Process input data.
         """
-        raise NotImplementedError()
 
     @abstractmethod
     def part_1(self) -> Any:
