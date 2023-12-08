@@ -81,7 +81,7 @@ class _HandType(Enum):
 @total_ordering
 @dataclass(frozen=True, kw_only=True)
 class Hand:
-    hand: tuple[_Card, ...]
+    hand: list[_Card]
     bid: int
     type: _HandType = field(init=False)
 
@@ -119,9 +119,7 @@ class Hand:
     @classmethod
     def from_row(cls, row: str) -> Self:
         hand_str, bid_str = row.split()
-        return cls(
-            hand=tuple(_CARD_STR_MAP[char] for char in hand_str), bid=int(bid_str)
-        )
+        return cls(hand=[_CARD_STR_MAP[char] for char in hand_str], bid=int(bid_str))
 
     def __eq__(self, __value: object) -> bool:
         if isinstance(__value, type(self)):
