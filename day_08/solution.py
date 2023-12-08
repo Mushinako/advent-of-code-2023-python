@@ -69,6 +69,7 @@ class Solution(SolutionAbstract, day=8):
                     node=node, step_count=step_count + loop_size
                 )
                 loop_size += 1
+            # This only applies because of specially constructed data
             assert loop_size == step_count
             full_loop_steps.append(step_count)
         return lcm(*full_loop_steps)
