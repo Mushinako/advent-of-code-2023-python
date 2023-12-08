@@ -18,7 +18,7 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 05 (If You Give A Seed A Fertilizer) |     3170     |     3117     |      |
 | 06 (Wait For It)                     |     1113     |     1342     |      |
 | 07 (Camel Cards)                     |     2269     |     2469     |      |
-| 08 ()                                |              |              |      |
+| 08 (Haunted Wasteland)               |     3066     |     1578     |      |
 | 09 ()                                |              |              |      |
 | 10 ()                                |              |              |      |
 | 11 ()                                |              |              |      |
@@ -37,13 +37,13 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 24 ()                                |              |              |      |
 | 25 ()                                |              |              |      |
 
-### By Leaderboard (as of 2023-12-05 01:46 EDT)
+### By Leaderboard (as of 2023-12-08 01:14 EDT)
 
 | Leaderboard | Score | Rank |
 | :---------- | :---: | :--: |
 | Worldwide   |   0   |      |
-| PyDis       | 12954 |  22  |
-| PyDis Staff |  950  |  4   |
+| PyDis       | 17303 |  21  |
+| PyDis Staff | 1269  |  4   |
 
 ## How to Use this Repo?
 
