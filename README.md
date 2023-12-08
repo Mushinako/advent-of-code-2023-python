@@ -17,7 +17,7 @@ uploaded at least 30 minutes after the start of each day's contest.
 | 04 (Scratchcards)                    |     2659     |     1298     |      |
 | 05 (If You Give A Seed A Fertilizer) |     3170     |     3117     |      |
 | 06 (Wait For It)                     |     1113     |     1342     |      |
-| 07 ()                                |              |              |      |
+| 07 (Camel Cards)                     |     2269     |     2469     |      |
 | 08 ()                                |              |              |      |
 | 09 ()                                |              |              |      |
 | 10 ()                                |              |              |      |
