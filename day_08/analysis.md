@@ -30,11 +30,12 @@ with [Chinese remaind theorem][2]. As it doesn't apply here I won't be discussin
 If interested, you can check out the Wikipedia page linked or my write-up for
 [AOC 2020 day 13 part 2][3]
 
-Sidenote: Per [discussion within PyDis][4], it does feel like the data is specifically
-constructed so that the number of steps to reach the first node that ends with `Z` is
-the same as the number of steps in the loop
+Sidenote: Per [discussion within PyDis][4] (btw, join [here][5]), it does feel like the
+data is specifically constructed so that the number of steps to reach the first node
+that ends with `Z` is the same as the number of steps in the loop
 
 [1]: https://en.wikipedia.org/wiki/Least_common_multiple
 [2]: https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 [3]: https://github.com/Mushinako/Advent-of-Code-2020/blob/main/Day_13/analysis.md#part-2
 [4]: https://discord.com/channels/267624335836053506/897932085766004786/1182563238345453661
+[5]: https://discord.gg/python
