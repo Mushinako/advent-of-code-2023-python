@@ -255,6 +255,8 @@ class Solution(SolutionAbstract, day=10):
                     walks.append(self.field.get_walk(coord=coord, direction=_D.SOUTH))
                 case _:
                     pass
+        # This assumes that the data is constructed such that only 2 pipes connect to
+        #   the animal's place. This is to validate that guess
         walk_1, walk_2 = walks
         return walk_1, walk_2
 
@@ -275,7 +277,9 @@ class Solution(SolutionAbstract, day=10):
         for (curr_row, curr_col), next_coord in pairwise(loop + [loop[0]]):
             trans_row = 2 * curr_row + 1
             trans_col = 2 * curr_col + 1
+            # Transformed coord
             coords.append((trans_row, trans_col))
+            # Fill gap
             if next_coord == (curr_row - 1, curr_col):
                 coords.append((trans_row - 1, trans_col))
             elif next_coord == (curr_row + 1, curr_col):
