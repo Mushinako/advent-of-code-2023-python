@@ -33,8 +33,8 @@ example, for loop (`*` is used in place of `.` to denote ground cells for clarit
 ****└───┘*└┘*└┘└┘***
 ```
 
-We multiple each cell's row and column number by 2 (note the new blanks in between,
-denoted by `.`)
+We multiple each cell's `row` and `col` indices (0-based) by 2 (note the new blanks in
+between, denoted by `.`)
 
 ```text
 *.┌.─.─.─.─.┐.┌.┐.┌.┐.┌.┐.┌.─.┐.*.*.*.*
@@ -110,8 +110,7 @@ boundary is denoted `+`
 +++++++++++++++++++++++++++++++++++++++++
 ```
 
-The overall transformation for all of the original cells is `(2*row+1, 2*col+1)` (`row`
-and `col` are 0-based)
+The overall transformation for all of the original cells is `(2*row+1, 2*col+1)`
 
 Note that we only care about the original cells (denoted `*`). In the final count we
 don't want to include the cells we added (`.` and `+`). We can identify them by odd
