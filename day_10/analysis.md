@@ -120,3 +120,30 @@ Now is the time to identify which points are outside and which ones are inside. 
 from a point on the boundary (e.g., `(0, 0)`) and traverse the field to find all the
 points it can reach. Those that it cannot reach are the points inside the loop. Count
 the number of unreached points that have odd `row` and `col`, and you're done!
+
+Here's the result for the example above (all outside points are removed; the 8 `█`s are
+the original cells inside the loop)
+
+```text
++++++++++++++++++++++++++++++++++++++++++
++  ┌─────────┐ ┌─┐ ┌─┐ ┌─┐ ┌───┐        +
++  │.........│ │.│ │.│ │.│ │...│        +
++  │.┌─────┐.│ │.│ │.│ │.│ │.┌─┘        +
++  │.│     │.│ │.│ │.│ │.│ │.│          +
++  │.│   ┌─┘.│ │.│ │.│ │.│ │.└─┐        +
++  │.│   │...│ │.│ │.│ │.│ │...│        +
++┌─┘.└─┐ └─┐.└─┘.└─┘.│ │.└─┘.█.└───┐    +
++│.....│   │.........│ │...........│    +
++└─────┘   └─┐.█.█.█.└─┘.┌─┐.┌───┐.└─┐  +
++            │...........│ │.│   │...│  +
++        ┌───┘.█.█.┌─┐.┌─┘ │.└─┐ └─┐.└─┐+
++        │.........│ │.│   │...│   │...│+
++        └─┐.█.┌─┐.│ │.└─┐ │.█.└─┐ └─┐.│+
++          │...│ │.│ │...│ │.....│   │.│+
++          │.┌─┘ └─┘ │.┌─┘ │.┌─┐.│   └─┘+
++          │.│       │.│   │.│ │.│      +
++        ┌─┘.└───┐   │.│   │.│ │.│      +
++        │.......│   │.│   │.│ │.│      +
++        └───────┘   └─┘   └─┘ └─┘      +
++++++++++++++++++++++++++++++++++++++++++
+```
