@@ -28,5 +28,5 @@ This is very similar to part 1, but instead of adding, we're doing subtraction t
                        0 (ignored because it's always 0)
 ```
 
-The pattern is that from the top, the odd levels are added, and the even levels are
-subtracted
+The pattern is that from the top, with 0-based index, the even levels are added, and the
+odd levels are subtracted
