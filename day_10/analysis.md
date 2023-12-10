@@ -18,7 +18,7 @@ data seems to conform to
 If the loop doesn't touch itself, one usual way of checking whether a point is inside or
 outside a loop is to check if there's a path from it to the edge of the field. In fact,
 we can do a small change to this field to make that apply: scale the field up by 2x. For
-example, for loop (`*` is used to in place of `.` denote ground cells for clarity)
+example, for loop (`*` is used in place of `.` to denote ground cells for clarity)
 
 ```text
 *┌────┐┌┐┌┐┌┐┌─┐****
