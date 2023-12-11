@@ -31,12 +31,12 @@ class _DistanceCalculator:
         return row_diff + col_diff
 
     def _get_diff(self, *, occupied: list[int], val_1: int, val_2: int) -> int:
-        val_min = min(val_1, val_2)
-        val_max = max(val_1, val_2)
-        val_min_occupied_index = bisect_right(occupied, val_min)
-        val_max_occupied_index = bisect_left(occupied, val_max)
-        val_gap = val_max - val_min - 1
-        occupied_count = val_max_occupied_index - val_min_occupied_index
+        val_low = min(val_1, val_2)
+        val_high = max(val_1, val_2)
+        val_low_occupied_index = bisect_right(occupied, val_low)
+        val_high_occupied_index = bisect_left(occupied, val_high)
+        val_gap = val_high - val_low - 1
+        occupied_count = val_high_occupied_index - val_low_occupied_index
         return (val_gap - occupied_count) * self.expansion_size + occupied_count + 1
 
 
