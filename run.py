@@ -79,6 +79,7 @@ def _get_args() -> Namespace:
     submit_parser = subparsers.add_parser("submit", aliases=_SUBMIT_CMDS)
     submit_parser.add_argument("day", type=int, choices=range(1, 26))
     submit_parser.add_argument("part", type=int, choices=(1, 2), nargs="?")
+    submit_parser.add_argument("-v", "--visualize", action="store_true")
 
     # Run method
     method_parser = subparsers.add_parser("method", aliases=_METHOD_CMDS)
