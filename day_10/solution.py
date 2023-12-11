@@ -5,13 +5,22 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import pairwise
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING
+
+import numpy as np
+from PIL import Image
 
 from utils import SolutionAbstract
 
 if TYPE_CHECKING:
-    type _Coord = tuple[int, int]
+    from types import TracebackType
     from typing import Self
+
+    type _Coord = tuple[int, int]
+    type _Color = tuple[int, int, int]
+    type _GifFrameData = list[list[_Color]]
 
 
 class _Direction(Enum):
@@ -167,6 +176,147 @@ class _TransformedField:
         return coords - self.loop_coords
 
 
+class _GifFrame:
+    frame: _GifFrameData
+
+    class Colors:
+        UNVISITED: _Color = (111, 194, 118)
+        VISITED: _Color = (0, 0, 0)
+        PENDING: _Color = (255, 244, 155)
+        LOOP: _Color = (251, 250, 245)
+        RESULT: _Color = (236, 100, 75)
+
+    pixel_size = 4
+
+    def __init__(self, *, height: int, width: int) -> None:
+        self.frame = [
+            [self.Colors.VISITED] * width * self.pixel_size
+            for _ in range(height * self.pixel_size)
+        ]
+
+    def set_color(self, *, row: int, col: int, color: _Color) -> None:
+        ps = self.pixel_size
+        for r in range(row * ps, row * ps + ps):
+            for c in range(col * ps, col * ps + ps):
+                self.frame[r][c] = color
+
+
+class _Part2Visualizer:
+    frame_paths: list[Path] = []
+    temp_dir: TemporaryDirectory[str]
+    temp_dir_path: Path
+    can_run: bool
+
+    gif_path = Path(__file__).resolve().parent / "part_2.gif"
+
+    def __init__(self, *, dry_run: bool = False) -> None:
+        self.frame_paths = []
+        self.temp_dir = TemporaryDirectory()
+        self.temp_dir_path = Path(self.temp_dir.name)
+        self.can_run = not dry_run
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(
+        self,
+        exc: type[BaseException] | None,
+        value: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None:
+        self.clean_up()
+
+    def clean_up(self) -> None:
+        self.temp_dir.cleanup()
+
+    def add_frame(self, solver: _Part2Solver) -> None:
+        if not self.can_run:
+            return
+        frame = _GifFrame(
+            height=solver.transformed_field.row_count,
+            width=solver.transformed_field.col_count,
+        )
+        for row, col in solver.unvisited_coords:
+            frame.set_color(row=row, col=col, color=frame.Colors.UNVISITED)
+        for row, col in solver.pending_coords:
+            frame.set_color(row=row, col=col, color=frame.Colors.PENDING)
+        for row, col in solver.transformed_field.loop_coords:
+            frame.set_color(row=row, col=col, color=frame.Colors.LOOP)
+
+        im = Image.fromarray(np.asarray(frame.frame, dtype=np.uint8))  # pyright: ignore[reportUnknownMemberType]
+        path = self.temp_dir_path / f"{len(self.frame_paths):>07}.png"
+        im.save(path)
+        self.frame_paths.append(path)
+
+    def add_final_frame(self, solver: _Part2Solver) -> None:
+        if not self.can_run:
+            return
+        frame = _GifFrame(
+            height=solver.transformed_field.row_count,
+            width=solver.transformed_field.col_count,
+        )
+        for row, col in solver.pending_coords:
+            frame.set_color(row=row, col=col, color=frame.Colors.PENDING)
+        for row, col in solver.transformed_field.loop_coords:
+            frame.set_color(row=row, col=col, color=frame.Colors.LOOP)
+        for row, col in solver.unvisited_coords:
+            color = (
+                frame.Colors.RESULT if row % 2 and col % 2 else frame.Colors.UNVISITED
+            )
+            frame.set_color(row=row, col=col, color=color)
+
+        im = Image.fromarray(np.asarray(frame.frame, dtype=np.uint8))  # pyright: ignore[reportUnknownMemberType]
+        path = self.temp_dir_path / f"{len(self.frame_paths):>07}.png"
+        im.save(path)
+        self.frame_paths.append(path)
+
+    def gen_gif(self) -> None:
+        if not self.can_run:
+            return
+        ims = (Image.open(path) for path in self.frame_paths)
+        im = next(ims)
+        im.save(
+            self.gif_path,
+            save_all=True,
+            append_images=ims,
+            optimize=True,
+            duration=1,
+        )
+
+
+class _Part2Solver:
+    transformed_field: _TransformedField
+    unvisited_coords: set[_Coord]
+    pending_coords: set[_Coord]
+
+    def __init__(self, transformed_field: _TransformedField) -> None:
+        self.transformed_field = transformed_field
+        self.unvisited_coords = {
+            (row, col)
+            for row in range(transformed_field.row_count)
+            for col in range(transformed_field.col_count)
+        } - transformed_field.loop_coords
+        self.pending_coords = {(0, 0)}
+
+    def run(self) -> int:
+        with _Part2Visualizer(dry_run=True) as vis:
+            while self.pending_coords:
+                vis.add_frame(self)
+                curr_coord = self.pending_coords.pop()
+                self.unvisited_coords.remove(curr_coord)
+                self.pending_coords |= (
+                    self.transformed_field.get_non_loop_neighbors(curr_coord)
+                    & self.unvisited_coords
+                )
+            vis.add_final_frame(self)
+            vis.gen_gif()
+
+        count_count = sum(
+            1 for row, col in self.unvisited_coords if row % 2 and col % 2
+        )
+        return count_count
+
+
 class Solution(SolutionAbstract, day=10):
     field: _Field
 
@@ -191,22 +341,7 @@ class Solution(SolutionAbstract, day=10):
         transformed_field = _TransformedField(
             orig_field=self.field, transformed_loop=transformed_loop
         )
-        unvisited_coords = {
-            (row, col)
-            for row in range(transformed_field.row_count)
-            for col in range(transformed_field.col_count)
-        } - transformed_field.loop_coords
-        pending_coords: set[_Coord] = {(0, 0)}
-
-        while pending_coords:
-            curr_coord = pending_coords.pop()
-            unvisited_coords.remove(curr_coord)
-            pending_coords |= (
-                transformed_field.get_non_loop_neighbors(curr_coord) & unvisited_coords
-            )
-
-        count_count = sum(1 for row, col in unvisited_coords if row % 2 and col % 2)
-        return count_count
+        return _Part2Solver(transformed_field).run()
 
     def _get_animal_start_walks(self) -> tuple[_Walk, _Walk]:
         animal_row, animal_col = self.field.animal_coord
