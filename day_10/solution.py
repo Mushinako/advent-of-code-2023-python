@@ -300,7 +300,10 @@ class _Part2Solver:
 
     def run(self, *, visualize: bool = False) -> int:
         with _Part2Visualizer(dry_run=not visualize) as vis:
+            loop_count = 0
             while self.pending_coords:
+                if not loop_count % 1000:
+                    print(f"\r\x1b[KFinished search loop #{loop_count}...", end="\r")
                 vis.add_frame(self)
                 curr_coord = self.pending_coords.pop()
                 self.unvisited_coords.remove(curr_coord)
@@ -308,6 +311,7 @@ class _Part2Solver:
                     self.transformed_field.get_non_loop_neighbors(curr_coord)
                     & self.unvisited_coords
                 )
+                loop_count += 1
             vis.add_final_frame(self)
             vis.gen_gif()
 
