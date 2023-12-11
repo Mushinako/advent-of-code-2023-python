@@ -34,6 +34,7 @@ class _DistanceCalculator:
         val_low = min(val_1, val_2)
         val_high = max(val_1, val_2)
         val_low_occupied_index = bisect_right(occupied, val_low)
+        # The `-1` and `+1` below can be removed if using `bisect_right` here
         val_high_occupied_index = bisect_left(occupied, val_high)
         val_gap = val_high - val_low - 1
         occupied_count = val_high_occupied_index - val_low_occupied_index
