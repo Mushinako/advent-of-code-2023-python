@@ -14,7 +14,6 @@ from aoc_io import download_input, submit_output
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from typing import Any
 
     from .utils import SolutionAbstract
 
@@ -49,7 +48,7 @@ def _main() -> None:
     # Run and get solution
     if args.part is None:
         raise ValueError("No part number provided.")
-    solution = _get_solution(solution_obj, args.part)
+    solution = _get_solution(solution_obj, args.part, visualize=args.visualize)
     if solution is None:
         print(f"{Fore.RED}No response got. This part may need manual processing.")
         return
@@ -74,6 +73,7 @@ def _get_args() -> Namespace:
     print_parser = subparsers.add_parser("print", aliases=_PRINT_CMDS)
     print_parser.add_argument("day", type=int, choices=range(1, 26))
     print_parser.add_argument("part", type=int, choices=(1, 2))
+    print_parser.add_argument("-v", "--visualize", action="store_true")
 
     # Submit
     submit_parser = subparsers.add_parser("submit", aliases=_SUBMIT_CMDS)
@@ -107,9 +107,7 @@ def _prepare(day: int) -> None:
     download_input(day=day)
 
 
-def _run_method(
-    solution_obj: SolutionAbstract[Any], day: int, method_name: str
-) -> None:
+def _run_method(solution_obj: SolutionAbstract, day: int, method_name: str) -> None:
     method = getattr(solution_obj, method_name)
     if not callable(method):
         raise ValueError(f"No method with name {method_name} on day {day}'s solution")
@@ -117,19 +115,21 @@ def _run_method(
     print(f"{Fore.GREEN}{result}")
 
 
-def _get_solution_obj(day: int) -> SolutionAbstract[Any]:
+def _get_solution_obj(day: int) -> SolutionAbstract:
     dir_name = f"day_{day:>02}"
     solution_module = import_module(f"{dir_name}.solution")
-    SolutionClass: type[SolutionAbstract[Any]] = getattr(solution_module, "Solution")
+    SolutionClass: type[SolutionAbstract] = getattr(solution_module, "Solution")
     return SolutionClass()
 
 
-def _get_solution(solution_obj: SolutionAbstract[Any], part: int) -> None | str | int:
+def _get_solution(
+    solution_obj: SolutionAbstract, part: int, *, visualize: bool = False
+) -> None | str | int:
     match part:
         case 1:
-            return solution_obj.part_1()
+            return solution_obj.part_1(visualize=visualize)
         case 2:
-            return solution_obj.part_2()
+            return solution_obj.part_2(visualize=visualize)
         case _:
             raise ValueError(f"Unknown part number {part}.")
 

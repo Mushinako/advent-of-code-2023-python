@@ -298,8 +298,8 @@ class _Part2Solver:
         } - transformed_field.loop_coords
         self.pending_coords = {(0, 0)}
 
-    def run(self) -> int:
-        with _Part2Visualizer(dry_run=True) as vis:
+    def run(self, *, visualize: bool = False) -> int:
+        with _Part2Visualizer(dry_run=not visualize) as vis:
             while self.pending_coords:
                 vis.add_frame(self)
                 curr_coord = self.pending_coords.pop()
@@ -326,14 +326,14 @@ class Solution(SolutionAbstract, day=10):
         """
         self.field = _Field(pipes=[list(row) for row in raw_data])
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 10 part 1 solution.
         """
         loop = self._get_loop()
         return len(loop) // 2
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 10 part 2 solution.
         """
@@ -341,7 +341,7 @@ class Solution(SolutionAbstract, day=10):
         transformed_field = _TransformedField(
             orig_field=self.field, transformed_loop=transformed_loop
         )
-        return _Part2Solver(transformed_field).run()
+        return _Part2Solver(transformed_field).run(visualize=visualize)
 
     def _get_animal_start_walks(self) -> tuple[_Walk, _Walk]:
         animal_row, animal_col = self.field.animal_coord

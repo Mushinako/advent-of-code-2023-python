@@ -11,12 +11,12 @@ class Solution(SolutionAbstract, day=-1):
         Process day xx data.
         """
 
-    def part_1(self) -> ...:
+    def part_1(self, *, visualize: bool = False) -> ...:
         """
         Day xx part 1 solution.
         """
 
-    def part_2(self) -> ...:
+    def part_2(self, *, visualize: bool = False) -> ...:
         """
         Day xx part 2 solution.
         """

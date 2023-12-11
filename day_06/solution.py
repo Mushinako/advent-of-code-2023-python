@@ -39,13 +39,13 @@ class Solution(SolutionAbstract, day=6):
             for time, distance in zip(times, distances, strict=True)
         ]
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 06 part 1 solution.
         """
         return prod(race.get_win_count() for race in self.races)
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 06 part 2 solution.
         """

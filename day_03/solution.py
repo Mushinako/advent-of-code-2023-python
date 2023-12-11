@@ -84,7 +84,7 @@ class Solution(SolutionAbstract, day=3):
         """
         self.schematic = _Schematic(data=[list(row) for row in raw_data])
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 03 part 1 solution.
         """
@@ -96,7 +96,7 @@ class Solution(SolutionAbstract, day=3):
             sum_ += sum(adjacent_numbers)
         return sum_
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 03 part 2 solution.
         """

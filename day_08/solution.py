@@ -88,7 +88,7 @@ class Solution(SolutionAbstract, day=8):
             )
         self.network = _Network(instructions=instructions, node_map=node_map)
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 08 part 1 solution.
         """
@@ -97,7 +97,7 @@ class Solution(SolutionAbstract, day=8):
             walker.run_step()
         return walker.step_count
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 08 part 2 solution.
         """

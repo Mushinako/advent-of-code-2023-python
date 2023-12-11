@@ -231,13 +231,13 @@ class Solution(SolutionAbstract, day=5):
         )
         self.almanac = _Almanac.from_text_rows(data_iter)
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 05 part 1 solution.
         """
         return min(self.almanac[seed] for seed in self.seed_configs)
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 05 part 2 solution.
         """

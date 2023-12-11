@@ -51,7 +51,7 @@ class Solution(SolutionAbstract, day=2):
         """
         self.games = [_Game.from_str(row) for row in raw_data]
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 02 part 1 solution.
         """
@@ -64,7 +64,7 @@ class Solution(SolutionAbstract, day=2):
                 sum_ += game.id
         return sum_
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 02 part 2 solution.
         """

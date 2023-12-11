@@ -46,7 +46,7 @@ class Solution(SolutionAbstract, day=4):
         """
         self.cards = [_Card.from_str(row) for row in raw_data]
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 04 part 1 solution.
         """
@@ -56,7 +56,7 @@ class Solution(SolutionAbstract, day=4):
                 points += 1 << (card.won_nums_count - 1)
         return points
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 04 part 2 solution.
         """

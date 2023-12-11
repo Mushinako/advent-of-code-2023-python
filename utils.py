@@ -40,14 +40,14 @@ class SolutionAbstract(ABC):
         """
 
     @abstractmethod
-    def part_1(self) -> Any:
+    def part_1(self, *, visualize: bool = False) -> Any:
         """
         Part 1 solution.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def part_2(self) -> Any:
+    def part_2(self, *, visualize: bool = False) -> Any:
         """
         Part 2 solution.
         """

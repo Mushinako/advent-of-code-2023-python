@@ -25,7 +25,7 @@ class Solution(SolutionAbstract, day=1):
         """
         self.data = raw_data
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 01 part 1 solution.
         """
@@ -45,7 +45,7 @@ class Solution(SolutionAbstract, day=1):
             sum_ += int(first_digit + last_digit)
         return sum_
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 01 part 2 solution.
         """

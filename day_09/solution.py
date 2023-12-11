@@ -43,13 +43,13 @@ class Solution(SolutionAbstract, day=9):
             _History(values=list(map(int, row.split()))) for row in raw_data
         ]
 
-    def part_1(self) -> int:
+    def part_1(self, *, visualize: bool = False) -> int:
         """
         Day 09 part 1 solution.
         """
         return sum(history.predict_next_value() for history in self.histories)
 
-    def part_2(self) -> int:
+    def part_2(self, *, visualize: bool = False) -> int:
         """
         Day 09 part 2 solution.
         """
