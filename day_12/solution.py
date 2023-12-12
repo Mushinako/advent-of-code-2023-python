@@ -16,49 +16,57 @@ if TYPE_CHECKING:
 @dataclass(frozen=True, kw_only=True)
 class _Record:
     springs_str: str
-    damaged_counts: tuple[int, ...]
+    damaged_spring_group_sizes: tuple[int, ...]
 
     @classmethod
     def from_row(cls, row: str) -> Self:
-        springs_str, damaged_counts_str = row.split()
-        damaged_counts = tuple(map(int, damaged_counts_str.split(",")))
-        return cls(springs_str=springs_str, damaged_counts=damaged_counts)
+        springs_str, damaged_spring_group_sizes_str = row.split()
+        damaged_spring_group_sizes = tuple(
+            map(int, damaged_spring_group_sizes_str.split(","))
+        )
+        return cls(
+            springs_str=springs_str,
+            damaged_spring_group_sizes=damaged_spring_group_sizes,
+        )
 
     def get_possibilities_count(self) -> int:
         return self._get_possibilities_count(
             springs_str=self.springs_str.strip("."),
-            damaged_counts=self.damaged_counts,
+            damaged_spring_group_sizes=self.damaged_spring_group_sizes,
         )
 
     @classmethod
     @cache
     def _get_possibilities_count(
-        cls, *, springs_str: str, damaged_counts: tuple[int, ...]
+        cls, *, springs_str: str, damaged_spring_group_sizes: tuple[int, ...]
     ) -> int:
         springs_str = springs_str.lstrip(".")
         # Check terminating conditions
         if not springs_str:
-            #   There should be no more damaged counts
-            return int(not damaged_counts)
-        if not damaged_counts:
+            #   There should be no more damaged spring group sizes left
+            return int(not damaged_spring_group_sizes)
+        if not damaged_spring_group_sizes:
             #   All springs must be operational
             return int("#" not in springs_str)
-        #   Make sure the springs can hold required damaged counts
-        if len(springs_str) < sum(damaged_counts) + len(damaged_counts) - 1:
+        #   Make sure the springs can hold required damaged spring group sizes
+        if (
+            len(springs_str)
+            < sum(damaged_spring_group_sizes) + len(damaged_spring_group_sizes) - 1
+        ):
             return 0
-        #   Make sure there are enough damaged counts to account for damaged spring
-        #     separations
+        #   Make sure there are enough damaged spring group sizes to account for damaged
+        #     spring separations
         known_springs_str = "".join(spring for spring in springs_str if spring != "?")
-        damaged_count_separation_count = len(
+        damaged_spring_groups_separation_count = len(
             re.split(r"\.+", known_springs_str.strip("."))
         )
-        if damaged_count_separation_count > len(damaged_counts):
+        if damaged_spring_groups_separation_count > len(damaged_spring_group_sizes):
             return 0
 
         # If first spring is damaged...
         #   Shouldn't have operational springs in range
-        first_damaged_count = damaged_counts[0]
-        proposed_damaged_springs = list(springs_str[:first_damaged_count])
+        first_damaged_spring_group_size = damaged_spring_group_sizes[0]
+        proposed_damaged_springs = list(springs_str[:first_damaged_spring_group_size])
         try:
             operational_index = proposed_damaged_springs.index(".")
         except ValueError:
@@ -70,45 +78,57 @@ class _Record:
             #   All springs before the operational spring are also undamaged
             return cls._get_possibilities_count(
                 springs_str=springs_str[operational_index + 1 :],
-                damaged_counts=damaged_counts,
+                damaged_spring_group_sizes=damaged_spring_group_sizes,
             )
         #   Shouldn't be followed by a damaged spring
         if (
-            len(springs_str) > first_damaged_count
-            and springs_str[first_damaged_count] == "#"
+            len(springs_str) > first_damaged_spring_group_size
+            and springs_str[first_damaged_spring_group_size] == "#"
         ):
-            first_spring_damaged_count = 0
+            first_spring_damaged_possibilities_count = 0
         else:
-            first_spring_damaged_count = cls._get_possibilities_count(
-                springs_str=springs_str[first_damaged_count + 1 :],
-                damaged_counts=damaged_counts[1:],
+            first_spring_damaged_possibilities_count = cls._get_possibilities_count(
+                springs_str=springs_str[first_damaged_spring_group_size + 1 :],
+                damaged_spring_group_sizes=damaged_spring_group_sizes[1:],
             )
 
         # If first spring is operational...
         if springs_str[0] == "#":
-            first_spring_operational_count = 0
+            first_spring_operational_possibilities_count = 0
         # Starts with `?`
         else:
-            first_spring_operational_count = cls._get_possibilities_count(
-                springs_str=springs_str[1:], damaged_counts=damaged_counts
+            first_spring_operational_possibilities_count = cls._get_possibilities_count(
+                springs_str=springs_str[1:],
+                damaged_spring_group_sizes=damaged_spring_group_sizes,
             )
-        return first_spring_damaged_count + first_spring_operational_count
+        return (
+            first_spring_damaged_possibilities_count
+            + first_spring_operational_possibilities_count
+        )
 
 
 @dataclass(frozen=True, kw_only=True)
 class _UnfoldedRecord(_Record):
     @classmethod
     def from_row(cls, row: str) -> Self:
-        springs_str, damaged_counts_str = row.split()
+        springs_str, damaged_spring_group_sizes_str = row.split()
         springs_str = "?".join([springs_str] * 5)
-        damaged_counts = tuple(map(int, damaged_counts_str.split(",") * 5))
-        return cls(springs_str=springs_str, damaged_counts=damaged_counts)
+        damaged_spring_group_sizes = tuple(
+            map(int, damaged_spring_group_sizes_str.split(",") * 5)
+        )
+        return cls(
+            springs_str=springs_str,
+            damaged_spring_group_sizes=damaged_spring_group_sizes,
+        )
 
     @classmethod
     def from_folded_record(cls, record: _Record) -> Self:
         springs_str = "?".join([record.springs_str] * 5)
-        damaged_counts = record.damaged_counts * 5
-        return cls(springs_str=springs_str, damaged_counts=damaged_counts)
+        damaged_spring_group_sizes = record.damaged_spring_group_sizes * 5
+        return cls(
+            springs_str=springs_str,
+            damaged_spring_group_sizes=damaged_spring_group_sizes,
+        )
 
 
 class Solution(SolutionAbstract, day=12):
