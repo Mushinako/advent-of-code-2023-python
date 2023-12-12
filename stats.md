@@ -14,8 +14,8 @@
 | 08 (Haunted Wasteland)               |     3066     |     1578     |      |
 | 09 (Mirage Maintenance)              |     600      |     656      |      |
 | 10 (Pipe Maze)                       |     2129     |     1865     |      |
-| 11 ()                                |              |              |      |
-| 12 ()                                |              |              |      |
+| 11 (Cosmic Expansion)                |     2749     |     2169     |      |
+| 12 (Hot Springs)                     |     597      |     2046     |      |
 | 13 ()                                |              |              |      |
 | 14 ()                                |              |              |      |
 | 15 ()                                |              |              |      |
@@ -30,10 +30,10 @@
 | 24 ()                                |              |              |      |
 | 25 ()                                |              |              |      |
 
-## Overall Rank by Leaderboard (as of 2023-12-10 02:19 EDT)
+## Overall Rank by Leaderboard (as of 2023-12-12 02:10 EDT)
 
 | Leaderboard | Score | Rank |
 | :---------- | :---: | :--: |
 | Worldwide   |   0   |      |
-| PyDis       | 21765 |  15  |
-| PyDis Staff | 1590  |  3   |
+| PyDis       | 26201 |  17  |
+| PyDis Staff | 1910  |  3   |
