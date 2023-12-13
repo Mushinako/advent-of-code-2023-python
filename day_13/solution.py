@@ -53,10 +53,10 @@ class _Pattern:
                 continue
             top = pattern_data[:i]
             bot = pattern_data[i:]
-            min_len = min(len(top), len(bot))
-            top = top[::-1][:min_len]
-            bot = bot[:min_len]
-            if top == bot:
+            for l1, l2 in zip(top[::-1], bot, strict=False):
+                if l1 != l2:
+                    break
+            else:
                 return i
 
 
