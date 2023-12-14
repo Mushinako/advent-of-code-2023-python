@@ -15,3 +15,6 @@ configuration after the cycle, there will be loops of configurations within the 
 billion cycles. If we figure out the loop size, then we can cut the number of iterations
 down from 1 billion. In my case, the loop size is 59, and I only had to run 184 cycles
 to find the answer
+
+Note that my implementations for individual rolls are not the most optimized. Gladly I
+don't have to optimize them
